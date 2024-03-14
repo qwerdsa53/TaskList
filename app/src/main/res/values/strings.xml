@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TaskList</string>
+    <string name="description">Добавить новое напоминание</string>
+    <string name="title">Task List</string>
 </resources>
