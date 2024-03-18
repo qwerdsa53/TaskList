@@ -2,4 +2,6 @@
     <string name="app_name">TaskList</string>
     <string name="description">Добавить новое напоминание</string>
     <string name="title">Task List</string>
+    <string name="Save">Save</string>
+    <string name="New_Task">New Task</string>
 </resources>

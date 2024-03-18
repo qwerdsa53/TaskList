@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <EditText
@@ -8,7 +9,9 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:hint="New Task"/>
+        android:hint="@string/New_Task"
+        android:importantForAutofill="no"
+        tools:ignore="TextFields" />
     <Button
         android:id="@+id/newTaskButton"
         android:layout_width="wrap_content"
@@ -16,7 +19,7 @@
         android:layout_below="@+id/newTaskText"
         android:layout_alignParentEnd="true"
         android:textSize="16sp"
-        android:text="Save"
+        android:text="@string/Save"
         android:textColor="@android:color/darker_gray"
         android:textStyle="bold"
         android:textAllCaps="false"
