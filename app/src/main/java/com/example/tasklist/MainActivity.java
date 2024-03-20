@@ -4,40 +4,60 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.View;
 
 import com.example.tasklist.Adapter.ToDoAdapter;
-import com.example.tasklist.Model.ToDOModel;
+import com.example.tasklist.Model.ToDoModel;
+import com.example.tasklist.Utils.DatabaseHandler;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DialogCloseListener{
     private RecyclerView tasksRecycleView;
     private ToDoAdapter tasksAdapter;
-    private List<ToDOModel> taskList;
+    private FloatingActionButton fab;
+    private List<ToDoModel> taskList;
+    private DatabaseHandler db;
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
-        taskList = new ArrayList<>();
+        db = new DatabaseHandler(this);
+        db.openDatabase();
+
 
         tasksRecycleView = findViewById(R.id.TasksRecyclerView);
         tasksRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        tasksAdapter = new ToDoAdapter(this);
+        tasksAdapter = new ToDoAdapter(db,this);
         tasksRecycleView.setAdapter(tasksAdapter);
+        fab = findViewById(R.id.fab);
 
-        ToDOModel task = new ToDOModel();
-        task.setTask("This is a task");
-        task.setStatus(0);
-        task.setId(1);
-
-        taskList.add(task);
-
-
-
+        taskList = db.getAllTasks();
+        Collections.reverse(taskList);
         tasksAdapter.setTasks(taskList);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG);
+            }
+        });
+    }
+
+    @Override
+    public void handleDialogClose(DialogInterface dialog) {
+        taskList = db.getAllTasks();
+        Collections.reverse(taskList);
+        tasksAdapter.setTasks(taskList);
+        tasksAdapter.notifyDataSetChanged();
     }
 }

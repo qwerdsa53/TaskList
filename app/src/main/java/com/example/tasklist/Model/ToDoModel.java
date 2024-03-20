@@ -1,6 +1,6 @@
 package com.example.tasklist.Model;
 
-public class ToDOModel {
+public class ToDoModel {
     private int id, status;
     private String task;
 

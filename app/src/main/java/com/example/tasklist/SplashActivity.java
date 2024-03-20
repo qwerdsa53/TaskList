@@ -14,10 +14,6 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         getSupportActionBar().hide();
 
-        if(getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
-
         final Intent i = new Intent(SplashActivity.this, MainActivity.class);
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -25,6 +21,6 @@ public class SplashActivity extends AppCompatActivity {
                 startActivity(i);
                 finish();
             }
-        }, 1000);
+        }, 2000);
     }
 }

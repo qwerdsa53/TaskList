@@ -9,9 +9,7 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:hint="@string/New_Task"
-        android:importantForAutofill="no"
-        tools:ignore="TextFields" />
+        android:hint="@string/New_Task" />
     <Button
         android:id="@+id/newTaskButton"
         android:layout_width="wrap_content"
