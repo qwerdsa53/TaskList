@@ -1,5 +1,6 @@
 package com.example.tasklist;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -52,6 +53,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
         return view;
     }
 
+    @SuppressLint("UseRequireInsteadOfGet")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

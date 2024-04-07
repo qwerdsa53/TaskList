@@ -16,14 +16,48 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/newTaskText"
         android:layout_alignParentEnd="true"
+        android:layout_marginTop="20dp"
         android:textSize="16sp"
         android:text="@string/Save"
         android:textColor="@android:color/darker_gray"
         android:textStyle="bold"
         android:textAllCaps="false"
         android:background="@android:color/transparent"/>
-
-
+    <TextView
+        android:id="@+id/Date"
+        android:layout_marginTop="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date: "
+        android:textSize="18dp"
+        android:layout_below="@+id/newTaskText"/>
+    <Button
+        android:id="@+id/setDateB"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:textColor="@color/black"
+        android:background="@android:color/transparent"
+        android:layout_toRightOf="@+id/Date"
+        android:layout_below="@+id/newTaskText"
+        android:text="set date"
+        />
+    <TextView
+        android:id="@+id/Time"
+        android:layout_marginTop="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time: "
+        android:textSize="18dp"
+        android:layout_below="@+id/setDateB"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:textColor="@color/black"
+        android:background="@android:color/transparent"
+        android:layout_toRightOf="@+id/Date"
+        android:layout_below="@+id/setDateB"
+        android:text="set time"
+        />
 
 
 </RelativeLayout>

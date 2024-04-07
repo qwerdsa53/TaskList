@@ -4,4 +4,5 @@
     <string name="title">Task List</string>
     <string name="Save">Save</string>
     <string name="New_Task">New Task</string>
+    <string name="sTime">add time</string>
 </resources>

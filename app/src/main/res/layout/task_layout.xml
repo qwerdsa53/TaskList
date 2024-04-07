@@ -9,19 +9,39 @@
     android:layout_marginHorizontal="16dp"
     android:layout_marginVertical="8dp"
     >
+
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp">
+
         <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
             android:id="@+id/todoCheckBox"
-            android:paddingStart="8dp"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:buttonTint="@color/mainBackground"
             android:checked="true"
-            tools:text="qweqweqweasfasfqwewefwdfsdfasfqwefs"/>
+            android:paddingStart="8dp"
+            tools:text="вацу" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/todoCheckBox"
+            android:layout_marginStart="16dp"
+            android:orientation="vertical"
+            android:layout_centerVertical="true">
+            <TextClock
+            android:id="@+id/TextClock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:format24Hour="HH:mm"
+            android:format12Hour="HH:mm"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="23.07.2024" />
+        </LinearLayout>
 
     </RelativeLayout>
 
