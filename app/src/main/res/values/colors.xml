@@ -5,6 +5,6 @@
     <color name="mainBackground">#FDD9B5</color>
     <color name="splashBackground">#FBB26A</color>
     <color name="colorPrimary">#FFFFFF</color>
-    <color name="colorPrimaryDark">@android:color/holo_green_dark</color>
+    <color name="colorPrimaryDark">#FBB26A</color>
     <color name="colorAccent">#000000</color>
 </resources>

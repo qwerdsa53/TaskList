@@ -1,48 +1,31 @@
 package com.example.tasklist.Model;
 
+import java.sql.Time;
+import java.util.Date;
+
 public class ToDoModel {
-    private int id, status, minutes, hours, day, month, year;
+    private int id, status;
     private String task;
+    private String taskDate;
+    private String taskTime;
 
-    public int getHours() {
-        return hours;
+    public String getTaskDate() {
+        return taskDate;
     }
 
-    public void setHours(int hours) {
-        this.hours = hours;
+    public void setTaskDate(String taskDate) {
+        this.taskDate = taskDate;
     }
 
-    public int getDay() {
-        return day;
+    public String getTaskTime() {
+        return taskTime;
     }
 
-    public void setDay(int day) {
-        this.day = day;
+    public void setTaskTime(String taskTime) {
+        this.taskTime = taskTime;
     }
 
-    public int getMonth() {
-        return month;
-    }
 
-    public void setMonth(int month) {
-        this.month = month;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    public int getMinutes() {
-        return minutes;
-    }
-
-    public void setMinutes(int minutes) {
-        this.minutes = minutes;
-    }
 
     public int getId() {
         return id;

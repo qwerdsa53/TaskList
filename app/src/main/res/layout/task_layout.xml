@@ -31,13 +31,13 @@
             android:layout_marginStart="16dp"
             android:orientation="vertical"
             android:layout_centerVertical="true">
-            <TextClock
-            android:id="@+id/TextClock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:format24Hour="HH:mm"
-            android:format12Hour="HH:mm"/>
             <TextView
+                android:id="@+id/TIME"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="23.07.2024" />
+            <TextView
+                android:id="@+id/q123"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="23.07.2024" />
