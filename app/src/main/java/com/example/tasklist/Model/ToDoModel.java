@@ -1,8 +1,5 @@
 package com.example.tasklist.Model;
 
-import java.sql.Time;
-import java.util.Date;
-
 public class ToDoModel {
     private int id, status;
     private String task;

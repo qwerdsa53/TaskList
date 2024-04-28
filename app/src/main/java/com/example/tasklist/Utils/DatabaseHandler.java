@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.tasklist.Model.ToDoModel;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,9 +40,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_TODO_TABLE);
-    }
+    public void onCreate(SQLiteDatabase db) {db.execSQL(CREATE_TODO_TABLE);}
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

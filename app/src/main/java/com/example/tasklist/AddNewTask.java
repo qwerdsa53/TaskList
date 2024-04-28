@@ -3,8 +3,12 @@ package com.example.tasklist;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import androidx.core.app.NotificationCompat;
+import android.app.Service;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
@@ -17,9 +21,10 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
-
+import android.Manifest;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.tasklist.Model.ToDoModel;
@@ -30,7 +35,6 @@ import java.util.Calendar;
 import java.util.Objects;
 
 public class AddNewTask extends BottomSheetDialogFragment {
-
     public static final String TAG = "ActionBottomDialog";
     private EditText newTaskText;
     private Button newTaskSaveButton;
@@ -127,10 +131,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                                 // it will work after selection
                                 String selectedDate;
-                                if((monthOfYear + 1)/10 > 1)
-                                    selectedDate = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
-                                else
-                                    selectedDate = dayOfMonth + "-0" + (monthOfYear + 1) + "-" + year;
+                                selectedDate = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
                                 datePickerButton.setText(selectedDate);
                                 datePickerButton.invalidate();
                             }
@@ -153,7 +154,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                                 // it will work after selection
                                 String selectedDate;
-                                if(minute/10 > 1)
+                                if (minute>9)
                                     selectedDate = hourOfDay + ":" + minute;
                                 else
                                     selectedDate = hourOfDay + ":0" + minute;
@@ -187,6 +188,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
                         // adding new task
                         db.insertTask(task);
                     }
+
                     dismiss();
                 }
             }
@@ -198,5 +200,7 @@ public class AddNewTask extends BottomSheetDialogFragment {
         Activity activity = getActivity();
         if(activity instanceof DialogCloseListener)
             ((DialogCloseListener)activity).handleDialogClose(dialog);
+        Intent serviceIntent = new Intent(getContext(), NotificationService.class);
+        activity.startService(serviceIntent);
     }
 }

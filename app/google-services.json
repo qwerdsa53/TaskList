@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "523623463320",
+    "firebase_url": "https://task-list-9cd41-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "task-list-9cd41",
+    "storage_bucket": "task-list-9cd41.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:523623463320:android:744aa5f9ccbed5d9a0d3ed",
+        "android_client_info": {
+          "package_name": "com.example.tasklist"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMsL-XhnfZx8WYkY00rDFU7J1d_hFS2hM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
