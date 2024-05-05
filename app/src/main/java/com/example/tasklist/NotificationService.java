@@ -7,15 +7,12 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import com.example.tasklist.Model.ToDoModel;
-import com.example.tasklist.Utils.DatabaseHandler;
+import com.example.tasklist.DB.DatabaseHandler;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -54,10 +51,9 @@ public class NotificationService extends Service {
                     int id = task.getId();
                     scheduleNotification(text,time,taskDate,status,id);
                 }
-
             }
         });
-        Toast.makeText(this, "Служба запущена",Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Служба сработала",Toast.LENGTH_SHORT).show();
         return START_STICKY;
     }
 
@@ -65,7 +61,7 @@ public class NotificationService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Toast.makeText(this, "Служба опущена", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Служба уничтожена", Toast.LENGTH_SHORT).show();
     }
     @SuppressLint({"ScheduleExactAlarm", "ObsoleteSdkInt"})
     public void scheduleNotification(String text, String time, String taskDate, int status, int id) {
@@ -93,12 +89,12 @@ public class NotificationService extends Service {
                 } else {
                     alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
                 }
-                Handler handler = new Handler(Looper.getMainLooper());
-                handler.post(new Runnable() {
-                    public void run() {
-                        Toast.makeText(getApplicationContext(), temp, Toast.LENGTH_LONG).show();
-                    }
-                });
+//                Handler handler = new Handler(Looper.getMainLooper());
+//                handler.post(new Runnable() {
+//                    public void run() {
+//                        Toast.makeText(getApplicationContext(), temp, Toast.LENGTH_LONG).show();
+//                    }
+//                });
             }
         } catch (ParseException e) {
             e.printStackTrace();

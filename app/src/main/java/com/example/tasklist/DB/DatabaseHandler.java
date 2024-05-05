@@ -1,4 +1,4 @@
-package com.example.tasklist.Utils;
+package com.example.tasklist.DB;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;

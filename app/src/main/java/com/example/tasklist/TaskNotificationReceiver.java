@@ -20,9 +20,12 @@ public class TaskNotificationReceiver extends BroadcastReceiver {
                 .setSmallIcon(R.drawable.logo)
                 .setContentTitle("Task Reminder")
                 .setContentText(taskText)
+                //.setContentIntent()
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(taskId, builder.build());
+        int status = intent.getIntExtra("status",0);
+        if(status == 0) {
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+            notificationManager.notify(taskId, builder.build());
+        }
     }
 }

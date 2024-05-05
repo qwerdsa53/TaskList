@@ -3,7 +3,6 @@ package com.example.tasklist;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,7 +23,7 @@ import android.view.View;
 
 import com.example.tasklist.Adapter.ToDoAdapter;
 import com.example.tasklist.Model.ToDoModel;
-import com.example.tasklist.Utils.DatabaseHandler;
+import com.example.tasklist.DB.DatabaseHandler;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Collections;
@@ -32,9 +31,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements DialogCloseListener{
-    private RecyclerView tasksRecycleView;
     private ToDoAdapter tasksAdapter;
-    private FloatingActionButton fab;
     private List<ToDoModel> taskList;
     private DatabaseHandler db;
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -48,11 +45,11 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
 
         db = new DatabaseHandler(this);
         db.openDatabase();
-        tasksRecycleView = findViewById(R.id.TasksRecyclerView);
+        RecyclerView tasksRecycleView = findViewById(R.id.TasksRecyclerView);
         tasksRecycleView.setLayoutManager(new LinearLayoutManager(this));
         tasksAdapter = new ToDoAdapter(db,this);
         tasksRecycleView.setAdapter(tasksAdapter);
-        fab = findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
 
         taskList = db.getAllTasks();
         Collections.reverse(taskList);
@@ -67,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
             public void onClick(View v) {
                 NotificationChannel();
                 AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG);
-//                startService(serviceIntent);
             }
 
         });
@@ -91,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "Notification";
-            String description = "PASTICCINO`S CHANNEL";
+            String description = "CHANNEL";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel("Notification", name, importance);
             channel.setDescription(description);

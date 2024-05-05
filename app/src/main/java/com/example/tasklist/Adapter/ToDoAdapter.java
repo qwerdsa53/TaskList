@@ -2,6 +2,7 @@ package com.example.tasklist.Adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.tasklist.AddNewTask;
 import com.example.tasklist.MainActivity;
 import com.example.tasklist.Model.ToDoModel;
+import com.example.tasklist.NotificationService;
 import com.example.tasklist.R;
-import com.example.tasklist.Utils.DatabaseHandler;
+import com.example.tasklist.DB.DatabaseHandler;
 
 import java.util.List;
 
@@ -39,7 +41,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position){
         db.openDatabase();
-
+        Intent serviceIntent = new Intent(getContext(), NotificationService.class);
         final ToDoModel item = todoList.get(position);
         holder.task.setText(item.getTask());
         holder.task.setChecked(toBoolean(item.getStatus()));
@@ -48,6 +50,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         holder.task.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if(isChecked){
                 db.updateStatus(item.getId(), 1);
+                activity.startService(serviceIntent);
             }else{
                 db.updateStatus(item.getId(),0);
             }
