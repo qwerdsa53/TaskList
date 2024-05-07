@@ -5,10 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,9 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.tasklist.AddNewTask;
 import com.example.tasklist.MainActivity;
 import com.example.tasklist.Model.ToDoModel;
-import com.example.tasklist.NotificationService;
-import com.example.tasklist.R;
+import com.example.tasklist.Notification.NotificationService;
 import com.example.tasklist.DB.DatabaseHandler;
+import com.example.tasklist.databinding.TaskLayoutBinding;
 
 import java.util.List;
 
@@ -27,27 +24,27 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     private final MainActivity activity;
     private final DatabaseHandler db;
 
-    public  ToDoAdapter(DatabaseHandler db, MainActivity activity){
+    public ToDoAdapter(DatabaseHandler db, MainActivity activity){
         this.db = db;
         this.activity = activity;
     }
 
     @NonNull
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.task_layout, parent, false);
-        return new ViewHolder(itemView);
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        TaskLayoutBinding binding = TaskLayoutBinding.inflate(layoutInflater, parent, false);
+        return new ViewHolder(binding);
     }
 
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position){
         db.openDatabase();
         Intent serviceIntent = new Intent(getContext(), NotificationService.class);
         final ToDoModel item = todoList.get(position);
-        holder.task.setText(item.getTask());
-        holder.task.setChecked(toBoolean(item.getStatus()));
-        holder.taskDate.setText(item.getTaskDate());
-        holder.taskTime.setText(item.getTaskTime());
-        holder.task.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        holder.binding.todoCheckBox.setText(item.getTask());
+        holder.binding.todoCheckBox.setChecked(toBoolean(item.getStatus()));
+        holder.binding.q123.setText(item.getTaskDate());
+        holder.binding.TIME.setText(item.getTaskTime());
+        holder.binding.todoCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if(isChecked){
                 db.updateStatus(item.getId(), 1);
                 activity.startService(serviceIntent);
@@ -56,6 +53,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
             }
         });
     }
+
     public int getItemCount(){
         return todoList.size();
     }
@@ -76,9 +74,11 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         todoList.remove(position);
         notifyItemRemoved(position);
     }
+
     public Context getContext() {
         return activity;
     }
+
     public void editItem(int position) {
         ToDoModel item = todoList.get(position);
         Bundle bundle = new Bundle();
@@ -92,15 +92,12 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        CheckBox task;
-        TextView taskDate;
-        TextView taskTime;
+        TaskLayoutBinding binding;
 
-        ViewHolder(View view){
-            super(view);
-            task = view.findViewById(R.id.todoCheckBox);
-            taskDate = view.findViewById(R.id.q123);
-            taskTime = view.findViewById(R.id.TIME);
+        ViewHolder(TaskLayoutBinding binding){
+            super(binding.getRoot());
+            this.binding = binding;
         }
     }
 }
+

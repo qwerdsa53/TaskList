@@ -14,9 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
@@ -25,6 +23,8 @@ import androidx.core.content.ContextCompat;
 
 import com.example.tasklist.Model.ToDoModel;
 import com.example.tasklist.DB.DatabaseHandler;
+import com.example.tasklist.Notification.NotificationService;
+import com.example.tasklist.databinding.NewTaskBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.Calendar;
@@ -32,12 +32,8 @@ import java.util.Objects;
 
 public class AddNewTask extends BottomSheetDialogFragment {
     public static final String TAG = "ActionBottomDialog";
-    private EditText newTaskText;
-    private Button newTaskSaveButton;
-    private Button datePickerButton;
-    private Button timePickerButton;
-
     private DatabaseHandler db;
+    private NewTaskBinding binding;
 
     public static AddNewTask newInstance(){
         return new AddNewTask();
@@ -48,70 +44,60 @@ public class AddNewTask extends BottomSheetDialogFragment {
         super.onCreate(savedInstanceState);
         setStyle(STYLE_NORMAL, R.style.DialogStyle);
     }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.new_task, container, false);
-        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
-        return view;
+        binding = NewTaskBinding.inflate(inflater, container, false);
+        Objects.requireNonNull(Objects.requireNonNull(getDialog()).getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        return binding.getRoot();
     }
 
     @SuppressLint("UseRequireInsteadOfGet")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        newTaskText = Objects.requireNonNull(getView()).findViewById(R.id.newTaskText);
-        datePickerButton = Objects.requireNonNull(getView()).findViewById(R.id.setDateB);
-        timePickerButton = Objects.requireNonNull(getView()).findViewById(R.id.setTimeB);
-        newTaskSaveButton = getView().findViewById(R.id.newTaskButton);
 
         boolean isUpdate = false;
-
         final Bundle bundle = getArguments();
         if(bundle != null){
             isUpdate = true;
             String task = bundle.getString("task");
             String date = bundle.getString("date");
             String time = bundle.getString("time");
-            newTaskText.setText(task);
-            datePickerButton.setText(date);
-            timePickerButton.setText(time);
+            binding.newTaskText.setText(task);
+            binding.setDateB.setText(date);
+            binding.setTimeB.setText(time);
             assert task != null;
             if(!task.isEmpty())
-                newTaskSaveButton.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorPrimaryDark));
+                binding.newTaskButton.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorPrimaryDark));
         }
 
         db = new DatabaseHandler(getActivity());
         db.openDatabase();
 
-        newTaskText.addTextChangedListener(new TextWatcher() {
+        binding.newTaskText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.toString().isEmpty()){
-                    newTaskSaveButton.setEnabled(false);
-                    newTaskSaveButton.setTextColor(Color.GRAY);
+                    binding.newTaskButton.setEnabled(false);
+                    binding.newTaskButton.setTextColor(Color.GRAY);
                 }
                 else{
-                    newTaskSaveButton.setEnabled(true);
-                    newTaskSaveButton.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorPrimaryDark));
+                    binding.newTaskButton.setEnabled(true);
+                    binding.newTaskButton.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorPrimaryDark));
                 }
             }
-
             @Override
             public void afterTextChanged(Editable s) {
             }
         });
 
 
-        datePickerButton.setOnClickListener(new View.OnClickListener() {
+        binding.setDateB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // get date
@@ -121,28 +107,27 @@ public class AddNewTask extends BottomSheetDialogFragment {
                 int mDay = c.get(Calendar.DAY_OF_MONTH);
 
                 // initialization DatePickerDialog
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
+                DatePickerDialog datePickerDialog = new DatePickerDialog(Objects.requireNonNull(getActivity()),
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                                 // it will work after selection
                                 String selectedDate;
                                 selectedDate = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
-                                datePickerButton.setText(selectedDate);
-                                datePickerButton.invalidate();
+                                binding.setDateB.setText(selectedDate);
+                                binding.setDateB.invalidate();
                             }
                         }, mYear, mMonth, mDay);
                 datePickerDialog.show();
             }
         });
-        timePickerButton.setOnClickListener(new View.OnClickListener() {
+        binding.setTimeB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // get time
                 final Calendar c = Calendar.getInstance();
                 int mHour = c.get(Calendar.HOUR_OF_DAY);
                 int mMinute = c.get(Calendar.MINUTE);
-
                 // initialization TimePickerDialog
                 TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(),
                         new TimePickerDialog.OnTimeSetListener() {
@@ -154,8 +139,8 @@ public class AddNewTask extends BottomSheetDialogFragment {
                                     selectedDate = hourOfDay + ":" + minute;
                                 else
                                     selectedDate = hourOfDay + ":0" + minute;
-                                timePickerButton.setText(selectedDate);
-                                timePickerButton.invalidate();
+                                binding.setTimeB.setText(selectedDate);
+                                binding.setTimeB.invalidate();
                             }
                         }, mHour, mMinute, true);
                 timePickerDialog.show();
@@ -164,13 +149,13 @@ public class AddNewTask extends BottomSheetDialogFragment {
 
 
         final boolean finalIsUpdate = isUpdate;
-        newTaskSaveButton.setOnClickListener(new View.OnClickListener() {
+        binding.newTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(newTaskSaveButton.isEnabled()){
-                    String text = newTaskText.getText().toString();
-                    String date = datePickerButton.getText().toString();
-                    String time = timePickerButton.getText().toString();
+                if(binding.newTaskButton.isEnabled()){
+                    String text = binding.newTaskText.getText().toString();
+                    String date = binding.setDateB.getText().toString();
+                    String time = binding.setTimeB.getText().toString();
                     ToDoModel task = new ToDoModel();
                     task.setTask(text);
                     task.setTaskDate(date);
@@ -197,6 +182,6 @@ public class AddNewTask extends BottomSheetDialogFragment {
         if(activity instanceof DialogCloseListener)
             ((DialogCloseListener)activity).handleDialogClose(dialog);
         Intent serviceIntent = new Intent(getContext(), NotificationService.class);
-        activity.startService(serviceIntent);
+        Objects.requireNonNull(activity).startService(serviceIntent);
     }
 }

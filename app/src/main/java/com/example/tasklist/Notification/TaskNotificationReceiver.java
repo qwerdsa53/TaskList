@@ -1,4 +1,4 @@
-package com.example.tasklist;
+package com.example.tasklist.Notification;
 
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+
+import com.example.tasklist.R;
 
 public class TaskNotificationReceiver extends BroadcastReceiver {
     @SuppressLint({"MissingPermission", "UnsafeProtectedBroadcastReceiver"})

@@ -1,13 +1,6 @@
 package com.example.tasklist;
 
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
@@ -21,10 +14,17 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.example.tasklist.Adapter.ToDoAdapter;
-import com.example.tasklist.Model.ToDoModel;
 import com.example.tasklist.DB.DatabaseHandler;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.tasklist.Model.ToDoModel;
+import com.example.tasklist.Notification.NotificationHelper;
+import com.example.tasklist.databinding.ActivityMainBinding;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,35 +40,35 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
+        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         Objects.requireNonNull(getSupportActionBar()).hide();
 
         db = new DatabaseHandler(this);
         db.openDatabase();
-        RecyclerView tasksRecycleView = findViewById(R.id.TasksRecyclerView);
-        tasksRecycleView.setLayoutManager(new LinearLayoutManager(this));
         tasksAdapter = new ToDoAdapter(db,this);
-        tasksRecycleView.setAdapter(tasksAdapter);
-        FloatingActionButton fab = findViewById(R.id.fab);
+
+        binding.TasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        binding.TasksRecyclerView.setAdapter(tasksAdapter);
 
         taskList = db.getAllTasks();
         Collections.reverse(taskList);
         tasksAdapter.setTasks(taskList);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new TouchHelper(tasksAdapter));
-        itemTouchHelper.attachToRecyclerView(tasksRecycleView);
+        itemTouchHelper.attachToRecyclerView(binding.TasksRecyclerView);
 
-        fab.setOnClickListener(new View.OnClickListener() {
+        binding.fab.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("MissingPermission")
             @Override
             public void onClick(View v) {
-                NotificationChannel();
+                NotificationHelper notificationHelper = new NotificationHelper(MainActivity.this);
+                notificationHelper.createNotificationChannel();
                 AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG);
             }
-
         });
-
     }
+
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
@@ -77,33 +77,5 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         Collections.reverse(taskList);
         tasksAdapter.setTasks(taskList);
         tasksAdapter.notifyDataSetChanged();
-    }
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void NotificationChannel(){
-        if (!NotificationManagerCompat.from(MainActivity.this).areNotificationsEnabled()) {
-            Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
-            intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
-            startActivity(intent);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Notification";
-            String description = "CHANNEL";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("Notification", name, importance);
-            channel.setDescription(description);
-
-
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            if (!alarmManager.canScheduleExactAlarms()) {
-                Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
-                intent.setData(Uri.parse("package:" + getPackageName()));
-                startActivityForResult(intent, 10);
-            }
-        }
-
     }
 }
