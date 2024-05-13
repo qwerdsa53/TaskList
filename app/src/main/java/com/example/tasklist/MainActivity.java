@@ -2,21 +2,13 @@ package com.example.tasklist;
 
 
 import android.annotation.SuppressLint;
-import android.app.AlarmManager;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -62,8 +54,7 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
             @SuppressLint("MissingPermission")
             @Override
             public void onClick(View v) {
-                NotificationHelper notificationHelper = new NotificationHelper(MainActivity.this);
-                notificationHelper.createNotificationChannel();
+                NotificationHelper.createNotificationChannel(getApplicationContext());
                 AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG);
             }
         });
@@ -79,3 +70,4 @@ public class MainActivity extends AppCompatActivity implements DialogCloseListen
         tasksAdapter.notifyDataSetChanged();
     }
 }
+//отступы в фрагменте

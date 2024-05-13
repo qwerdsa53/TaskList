@@ -13,14 +13,8 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationManagerCompat;
 
 public class NotificationHelper {
-    private final Context context;
-
-    public NotificationHelper(Context context) {
-        this.context = context;
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void createNotificationChannel() {
+    public static void createNotificationChannel(Context context) {
         if (!NotificationManagerCompat.from(context).areNotificationsEnabled()) {
             Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
             intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.getPackageName());
