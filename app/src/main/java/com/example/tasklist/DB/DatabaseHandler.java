@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.example.tasklist.Model.ToDoModel;
 
@@ -34,13 +35,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     ")";
 
     private SQLiteDatabase db;
+    private FirebaseSyncManager firebaseSyncManager;
 
     public DatabaseHandler(Context context) {
         super(context, NAME, null, VERSION);
+        firebaseSyncManager = new FirebaseSyncManager();
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) {db.execSQL(CREATE_TODO_TABLE);}
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL(CREATE_TODO_TABLE);
+        firebaseSyncManager = new FirebaseSyncManager();
+    }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -54,23 +60,31 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public void insertTask(ToDoModel task){
         ContentValues cv = new ContentValues();
-        cv.put(TASK, task. getTask());
+        cv.put(TASK, task.getTask());
         cv.put(STATUS, 0);
         cv.put(DATE, task.getTaskDate());
         cv.put(TIME, task.getTaskTime());
-        db.insert(TODO_TABLE, null, cv);
+        long id = db.insert(TODO_TABLE, null, cv);
+        int intId = (int) id;
+        task.setId(intId);
+        if (firebaseSyncManager != null) {
+            firebaseSyncManager.insertTask(task);
+        } else {
+            // Обработка случая, если firebaseSyncManager равен null
+            Log.e("DatabaseHandler", "firebaseSyncManager не инициализирован");
+        }
     }
 
     @SuppressLint("Range")
-    public List<ToDoModel> getAllTasks(){
+    public List<ToDoModel> getAllTasks() {
         List<ToDoModel> taskList = new ArrayList<>();
         Cursor cur = null;
         db.beginTransaction();
-        try{
+        try {
             cur = db.query(TODO_TABLE, null, null, null, null, null, null, null);
-            if(cur != null){
-                if(cur.moveToFirst()){
-                    do{
+            if (cur != null) {
+                if (cur.moveToFirst()) {
+                    do {
                         ToDoModel task = new ToDoModel();
                         task.setId(cur.getInt(cur.getColumnIndex(ID)));
                         task.setTask(cur.getString(cur.getColumnIndex(TASK)));
@@ -78,12 +92,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         task.setTaskDate(cur.getString(cur.getColumnIndex(DATE)));
                         task.setTaskTime(cur.getString(cur.getColumnIndex(TIME)));
                         taskList.add(task);
-                    }
-                    while(cur.moveToNext());
+                    } while (cur.moveToNext());
                 }
             }
-        }
-        finally {
+        } finally {
             db.endTransaction();
             assert cur != null;
             cur.close();
@@ -91,10 +103,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return taskList;
     }
 
-    public void updateStatus(int id, int status){
+
+    public void updateStatus(int id, int status) {
         ContentValues cv = new ContentValues();
         cv.put(STATUS, status);
-        db.update(TODO_TABLE, cv, ID + "= ?", new String[] {String.valueOf(id)});
+        db.update(TODO_TABLE, cv, ID + "= ?", new String[]{String.valueOf(id)});
+        ToDoModel task = new ToDoModel();
+        task.setId(id);
+        task.setStatus(status);
+        firebaseSyncManager.updateStatus(task.getId(),status);
     }
 
     public void updateTask(int id, String task, String date, String time) {
@@ -102,10 +119,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cv.put(TASK, task);
         cv.put(DATE, date);
         cv.put(TIME, time);
-        db.update(TODO_TABLE, cv, ID + "= ?", new String[] {String.valueOf(id)});
+        db.update(TODO_TABLE, cv, ID + "= ?", new String[]{String.valueOf(id)});
+        ToDoModel taskModel = new ToDoModel();
+        taskModel.setId(id);
+        taskModel.setTask(task);
+        taskModel.setTaskDate(date);
+        taskModel.setTaskTime(time);
+        firebaseSyncManager.updateTask(taskModel);
     }
 
-    public void deleteTask(int id){
-        db.delete(TODO_TABLE, ID + "= ?", new String[] {String.valueOf(id)});
+    public void deleteTask(int id) {
+        db.delete(TODO_TABLE, ID + "= ?", new String[]{String.valueOf(id)});
+        firebaseSyncManager.deleteTask(id);
     }
 }
