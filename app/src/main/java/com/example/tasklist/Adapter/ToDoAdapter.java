@@ -17,11 +17,13 @@ import com.example.tasklist.Notification.NotificationService;
 import com.example.tasklist.DB.DatabaseHandler;
 import com.example.tasklist.databinding.TaskLayoutBinding;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     private List<ToDoModel> todoList;
-    private final MainActivity activity;
+    private MainActivity activity;
     private final DatabaseHandler db;
 
     public ToDoAdapter(DatabaseHandler db, MainActivity activity){
@@ -35,7 +37,19 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         TaskLayoutBinding binding = TaskLayoutBinding.inflate(layoutInflater, parent, false);
         return new ViewHolder(binding);
     }
-
+    private void sortTasks() {
+        todoList.sort(new Comparator<ToDoModel>() {
+            @Override
+            public int compare(ToDoModel o1, ToDoModel o2) {
+                if (!o1.getTaskDate().equals(o2.getTaskDate())) {
+                    return o1.getTaskDate().compareTo(o2.getTaskDate());
+                } else {
+                    return o1.getTaskTime().compareTo(o2.getTaskTime());
+                }
+            }
+        });
+    }
+    @SuppressLint("NotifyDataSetChanged")
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position){
         db.openDatabase();
         Intent serviceIntent = new Intent(getContext(), NotificationService.class);
@@ -65,6 +79,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     @SuppressLint("NotifyDataSetChanged")
     public void setTasks(List<ToDoModel> todoList){
         this.todoList = todoList;
+        sortTasks();
         notifyDataSetChanged();
     }
 
@@ -73,6 +88,10 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         db.deleteTask(item.getId());
         todoList.remove(position);
         notifyItemRemoved(position);
+
+        Intent serviceIntent = new Intent(getContext(), NotificationService.class);
+        serviceIntent.putExtra("taskId", item.getId());
+        getContext().startService(serviceIntent);
     }
 
     public Context getContext() {

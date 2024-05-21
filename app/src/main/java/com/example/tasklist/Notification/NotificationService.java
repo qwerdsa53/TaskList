@@ -28,7 +28,6 @@ public class NotificationService extends Service {
     private DatabaseHandler db;
     private final Executor executor = Executors.newSingleThreadExecutor();
     private List<ToDoModel> todoList;
-
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -36,6 +35,10 @@ public class NotificationService extends Service {
     }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        int taskId = intent.getIntExtra("taskId", -1);
+        if (taskId != -1) {
+            cancelNotification(taskId);
+        }
         db = new DatabaseHandler(this);
         db.openDatabase();
         executor.execute(new Runnable() {
@@ -53,7 +56,6 @@ public class NotificationService extends Service {
                 }
             }
         });
-//        Toast.makeText(this, "Служба сработала",Toast.LENGTH_SHORT).show();
         return START_STICKY;
     }
 
@@ -61,7 +63,6 @@ public class NotificationService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        Toast.makeText(this, "Служба уничтожена", Toast.LENGTH_SHORT).show();
     }
     @SuppressLint({"ScheduleExactAlarm", "ObsoleteSdkInt"})
     public void scheduleNotification(String text, String time, String taskDate, int status, int id) {
@@ -81,26 +82,34 @@ public class NotificationService extends Service {
             long timeInMillis = Objects.requireNonNull(date).getTime();
             long curTime = Calendar.getInstance().getTimeInMillis();
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            Calendar calendar = Calendar.getInstance();
             if (timeInMillis > curTime) {
-                String temp = "YES";
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,timeInMillis,pendingIntent);
                 } else {
                     alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
                 }
-//                Handler handler = new Handler(Looper.getMainLooper());
-//                handler.post(new Runnable() {
-//                    public void run() {
-//                        Toast.makeText(getApplicationContext(), temp, Toast.LENGTH_LONG).show();
-//                    }
-//                });
             }
         } catch (ParseException e) {
             e.printStackTrace();
         }
     }
-
-
+    @SuppressLint("ObsoleteSdkInt")
+    public void cancelNotification(int taskId) {
+        Intent intent = new Intent(getApplicationContext(), TaskNotificationReceiver.class);
+        PendingIntent pendingIntent;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendingIntent = PendingIntent.getBroadcast(
+                    getApplicationContext(), taskId, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
+            );
+        } else {
+            pendingIntent = PendingIntent.getBroadcast(
+                    getApplicationContext(), taskId, intent, PendingIntent.FLAG_UPDATE_CURRENT
+            );
+        }
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            alarmManager.cancel(pendingIntent);
+        }
+    }
 
 }
